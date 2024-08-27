@@ -1,0 +1,67 @@
+stages:
+  data_split:
+    cmd: python dvc/src/data_split.py
+    deps:
+    - dvc/src/data_split.py
+    params:
+    - base.random_state
+    - data_source.git_path
+    - split.split_ratio
+    outs:   
+    - dvc/data/split
+
+  data_process:
+    cmd: python dvc/src/data_process.py
+    deps:
+    - dvc/data/split
+    - dvc/src/data_process.py
+    params:
+    - process.dir
+    - process.test_file
+    - process.train_file
+    - split.dir
+    - split.train_file
+    - split.test_file
+    outs:
+    - dvc/data/processed 
+  
+  train:
+    cmd: python dvc/src/train.py data/features model/rf_model_1.pkl
+    deps:
+    - dvc/data/processed
+    - dvc/src/train.py
+    params:
+    - base.random_state
+    - base.target_col
+    - model_dir
+    - process.dir
+    - process.train_file
+    - process.test_file
+    - train.n_est
+    outs:
+    - model/rf_model_1.pkl
+
+  evaluate:
+    cmd: python dvc/src/evaluate.py model/rf_model_1.pkl dvc/data/processed
+    deps:
+    - dvc/data/processed
+    - model/rf_model_1.pkl
+    - dvc/src/evaluate.py
+    outs:
+    - eval/importance.png
+    - eval/live/plots:
+        cache: false
+    # - eval/precision:
+    #     cache: false
+    metrics:
+    - eval/live/metrics.json:
+        cache: false
+
+plots:
+  - Confusion Matrix:
+      template: confusion
+      x: actual
+      y:
+        eval/live/plots/sklearn/cm/train.json: predicted
+        eval/live/plots/sklearn/cm/test.json: predicted
+  - eval/importance.png
