@@ -64,12 +64,12 @@ stages:
         process.dir: dvc/data/processed
         process.test_file: test.csv
         process.train_file: train.csv
-        train.n_est: 10
+        train.n_est: 2
     outs:
     - path: model/rf_model_1.pkl
       hash: md5
-      md5: 2fb786282ec0337e63aa427e327f3b5c
-      size: 18485
+      md5: b7bc874b6ba2d76734cbd27cfbb1de37
+      size: 4725
   evaluate:
     cmd: python dvc/src/evaluate.py model/rf_model_1.pkl dvc/data/processed
     deps:
@@ -80,21 +80,21 @@ stages:
       nfiles: 2
     - path: dvc/src/evaluate.py
       hash: md5
-      md5: 45c0def6465d96a5beddfc4935595826
-      size: 3659
+      md5: 980ef6f7ab1765172d4e0055a4673327
+      size: 3633
     - path: model/rf_model_1.pkl
       hash: md5
-      md5: 2fb786282ec0337e63aa427e327f3b5c
-      size: 18485
+      md5: b7bc874b6ba2d76734cbd27cfbb1de37
+      size: 4725
     outs:
     - path: eval/importance.png
       hash: md5
-      md5: 094388407f8dcfa2d28f9d58d44726d0
-      size: 15947
+      md5: 76b2fa9670baaf648fb2205df25704d1
+      size: 12746
     - path: eval/live/metrics.json
       hash: md5
-      md5: fec586eb6e890c183dc5c50fcb9b4b11
-      size: 151
+      md5: 33c099cb4ed3da0771abe3ae14fe200e
+      size: 196
     - path: eval/live/plots
       hash: md5
       md5: a2d173572ffe22c6d1e68af00a05c712.dir
