@@ -1,31 +1,63 @@
+# Stage
 stages:
+
+  # In this stage, first step is splitting the data
   data_split:
+
+    # cmd to execute this file
     cmd: python dvc/src/data_split.py
+
+    # this step is depends on data_split python script
     deps:
     - dvc/src/data_split.py
+
+    # What all parameters are used to execute the variables this file has
     params:
     - base.random_state
     - data_source.git_path
     - split.split_ratio
+
+    # what output we are expecting, a folder named split where train.csv and test.csv is saved
     outs:   
     - dvc/data/split
-
+  
+  # This step is processing, here we are just encoding label (for simplicity) as our focus is DVC
   data_process:
+    
+    # cmd to execute this step
     cmd: python dvc/src/data_process.py
+
+    # This file depends on data from split directory, because we need to process the split data
+    # which is in split directory --> train.csv, test.csv
+    # also it depends on data_process python script
     deps:
     - dvc/data/split
     - dvc/src/data_process.py
+
+    # parameters used in this step and for processing
     params:
+
+    # directory for saving processed data
     - process.dir
+
+    # saving the processed train data to defined processed test path
     - process.test_file
+
+    # saving the processed train data to defined processed train path
     - process.train_file
+
+    # data from split directory
     - split.dir
     - split.train_file
     - split.test_file
+
+    # output we need 
     outs:
     - dvc/data/processed 
   
+  # train step
   train:
+  
     cmd: python dvc/src/train.py data/features model/rf_model_1.pkl
     deps:
     - dvc/data/processed
@@ -60,7 +92,9 @@ stages:
 plots:
   - Confusion Matrix:
       template: confusion
+      # actual y
       x: actual
+      # predicted y
       y:
         eval/live/plots/sklearn/cm/train.json: predicted
         eval/live/plots/sklearn/cm/test.json: predicted

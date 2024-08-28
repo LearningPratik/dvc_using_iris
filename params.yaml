@@ -1,4 +1,8 @@
+# This is like a dictionary where base, data_source, split, process, model and train are different dictionaries
 base:
+  # key and value
+  # key is parameter and value is it's value
+  # projects : name
   projects: dvc_pipeline_with_iris
   random_state: 42
   target_col: species
